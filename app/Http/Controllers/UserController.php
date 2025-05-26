@@ -48,14 +48,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
-        $validated = $request->validate(
-            [
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:7|confirmed',
-            ]
-        );
-
         $valiator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -127,10 +119,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+   
 
     /**
      * Update the specified resource in storage.
@@ -139,21 +128,45 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, int $id)
     {
         //
-        $validated = $request->validate(
-            [
-                'name' => 'sometimes|required|string|max:255',
-                'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
-                'password' => 'sometimes|required|string|min:8|confirmed',
-            ]
-        );
-        if(isset($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
+        $validator = Validator::make($request->all(),
+    [
+        'name' => 'required|string|max:191',
+        'email' => 'required|email|max:191',
+        'password' => 'required|string|max:191',
+       
+    ]);
+
+    if($validator->fails()){
+        return response()->json([
+            'status' => 422,
+            'message' => $validator->errors()
+        ], 422);
+
+    }else{
+        $user = User::find($id);
+        if($user){
+            $user->update([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password'))
+            ]);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Utilizador atualizado com sucesso'
+            ], 200);
+
+        } else{
+            return response()->json([
+                'status' => 404,
+                'message' =>'Utilizador nao encontrado!'
+            ], 404);
         }
-        $user->update($validated);
-        return response()->json($user);
+
+    }
+        
     }
 
     /**
@@ -162,10 +175,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
         //
-        $user->delete();
-        return response()->json(null, 204);
+        $user = User::find($id);
+        if($user){
+            $user->delete();
+            
+        }else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Uttilizador não encontrado!'
+
+            ], 404);
+        }
     }
 }
