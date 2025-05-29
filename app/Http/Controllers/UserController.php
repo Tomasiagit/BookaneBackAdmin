@@ -51,6 +51,7 @@ class UserController extends Controller
         $valiator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'role_id' => 'required|exists:roles,id',
             'password' => 'required|string|min:7|confirmed',
         ]);
 
@@ -63,6 +64,7 @@ class UserController extends Controller
             $user = User::create([
                 'name'=>$request->name,
                 'email'=>$request->email,
+                'role_id'=>$request->role_id,
                 'password' => Hash::make($request->password),
             ]);
 
@@ -82,9 +84,7 @@ class UserController extends Controller
             }
         }
 
-        // $validated['password'] = bcrypt($validated['password']);
-        // $user = User::create($validated);
-        // return response()->json($user, 201);
+    
             
     
     }
@@ -135,6 +135,7 @@ class UserController extends Controller
     [
         'name' => 'required|string|max:191',
         'email' => 'required|email|max:191',
+        'role_id' => 'required|exists:roles,id', //'required|exists:roles,id',
         'password' => 'required|string|max:191',
        
     ]);
@@ -151,6 +152,7 @@ class UserController extends Controller
             $user->update([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
+                'role_id' => $request->input('role_id'),
                 'password' => Hash::make($request->input('password'))
             ]);
             return response()->json([
