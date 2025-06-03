@@ -12,7 +12,7 @@ class LivroController extends Controller
         $livro = Livro::all();
         return response()->json([
             'status' => 200,
-            'users' => $livro 
+            'livros' => $livro 
         ], 200);
 
     }
@@ -33,15 +33,17 @@ class LivroController extends Controller
                 'message' => $valiator->errors()
             ], 422);
         } else{
-            $user = Livro::create([
-                'disciplina' => $request->input('disciplina'),
-                'classe' => $request->input('classe'),
-                'classe_id'=>$request->input('classe_id'),
-                'arquivo' => $request->input('arquivo'),
+            $livro = Livro::create([
+                'disciplina' =>$request->disciplina,
+                'classe' => $request->classe,
+                'classe_id'=>$request->classe_id,
+                'arquivo' => $request->arquivo
             ]);
 
+            
 
-            if($user){
+
+            if($livro){
                 return response()->json([
                     'status' => 200,
                     'message' => 'LIvro criado com sucesso!'
@@ -59,6 +61,7 @@ class LivroController extends Controller
     //
      public function update(Request $request, int $id)
     {
+
         //
         $validator = Validator::make($request->all(),
     [
@@ -99,6 +102,24 @@ class LivroController extends Controller
     }
         
     }
+    public function livrosPorClasse($classe_id){
+        $livros = Livro::where('classe_id',$classe_id)->get();
+
+        if($livros){
+            return response()->json($livros);
+
+        }else{
+            return response()->json([
+                'status'=> 404,
+                'message' => 'Livros não encontrados'
+
+            ],404);
+        }
+        
+
+    }
+
+
      public function show($id)
     {
         //

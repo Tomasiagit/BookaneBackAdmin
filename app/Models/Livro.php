@@ -8,6 +8,6 @@ class Livro extends Model
 {
     //
     protected $fillable = [
-        'disciplina','classe','arquivo'
+        'disciplina','classe','classe_id','arquivo'
     ];
 }

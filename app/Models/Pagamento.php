@@ -8,7 +8,7 @@ class Pagamento extends Model
 {
     //
     protected $fillable = [
-        'id_user','id_pacote','estado','data_inicio','data_fim'
+        'user_id','pacote_id','classe_id','estado','data_inicio','data_fim'
 
     ];
 }

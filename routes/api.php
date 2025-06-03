@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\LivroController;
 use App\Http\Controllers\PacoteController;
+use App\Http\Controllers\PagamentoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController; 
@@ -32,3 +34,15 @@ Route::get('/pacotes/{id}',[PacoteController::class,'show']);
 Route::post('/pacotes/{id}',[PacoteController::class, 'update']);
 Route::delete('/pacotes/{id}',[PacoteController::class, 'destroy']);
 
+Route::get('/livros',[LivroController::class, 'index']);
+Route::post('/livros',[LivroController::class,'store']);
+Route::get('/livros/{id}',[LivroController::class,'show']);
+Route::post('/livros/{id}',[LivroController::class, 'update']);
+Route::get('/livros/classe/{classe_id}',[LivroController::class,'livrosPorClasse']);
+Route::delete('/livros/{id}',[LivroController::class, 'destroy']);
+
+Route::get('/pagamentos', [PagamentoController::class, 'index']);
+Route::post('/pagamentos', [PagamentoController::class, 'store']);
+Route::post('/pagamentos/{id}', [PagamentoController::class, 'update']);
+Route::get('/pagamentos/{id}',[PagamentoController::class, 'show']);
+Route::delete('/pagamentos/{id}',[PagamentoController::class, 'destroy']);
