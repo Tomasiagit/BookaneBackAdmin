@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LivroController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PagamentoController;
@@ -22,6 +23,11 @@ use App\Http\Controllers\UserController;
 //     return $request->user();
 // });
 //Route::apiResource('users', UserController::class);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware(['jwt.auth'])->group(function () {
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
 Route::get('/users',[UserController::class, 'index']);
 Route::post('/users',[UserController::class,'store']);
 Route::get('/users/{id}',[UserController::class,'show']);
