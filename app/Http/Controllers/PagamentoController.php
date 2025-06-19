@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pagamento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class PagamentoController extends Controller
@@ -14,7 +15,7 @@ class PagamentoController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => $pagamento,
+            'pagamentos' => $pagamento,
         ], 200);
 
 
@@ -84,7 +85,7 @@ class PagamentoController extends Controller
 
 
     }
-    public function update(Request $request, $pagamento_id){
+    public function update(Request $request, $id){
           $validator = Validator::make($request->all(),[
             'user_id' => 'required|exists:users,id',
             'pacote_id' => 'required|exists:pacotes,id',
@@ -102,9 +103,10 @@ class PagamentoController extends Controller
             ], 422);
 
         } else{
-            $pagamento = Pagamento::find($pagamento_id);
+         
+            $pagamento = Pagamento::find($id);
             if($pagamento){
-                  $pagamento = Pagamento::update([
+                  $pagamento -> update([
                 'user_id' => $request->input('user_id'),
                 'pacote_id' => $request->input('pacote_id'),
                 'classe_id' => $request->input('classe_id'),

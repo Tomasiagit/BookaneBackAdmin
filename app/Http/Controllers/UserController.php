@@ -136,7 +136,7 @@ class UserController extends Controller
         'name' => 'required|string|max:191',
         'email' => 'required|email|max:191',
         'role_id' => 'required|exists:roles,id', //'required|exists:roles,id',
-        'password' => 'required|string|max:191',
+        // 'password' => 'required|string|max:191',
        
     ]);
 
@@ -153,7 +153,7 @@ class UserController extends Controller
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'role_id' => $request->input('role_id'),
-                'password' => Hash::make($request->input('password'))
+                // 'password' => Hash::make($request->input('password'))
             ]);
             return response()->json([
                 'status' => 200,

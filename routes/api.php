@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\LivroController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PagamentoController;
@@ -52,3 +54,6 @@ Route::post('/pagamentos', [PagamentoController::class, 'store']);
 Route::post('/pagamentos/{id}', [PagamentoController::class, 'update']);
 Route::get('/pagamentos/{id}',[PagamentoController::class, 'show']);
 Route::delete('/pagamentos/{id}',[PagamentoController::class, 'destroy']);
+
+Route::get('/disciplinas', [DisciplinaController::class, 'index']);
+Route::get ('/classes', [ClasseController::class, 'index']);

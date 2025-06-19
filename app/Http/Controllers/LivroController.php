@@ -24,8 +24,12 @@ class LivroController extends Controller
         'disciplina' => 'required|string|max:50',
         'classe' => 'required|string|max:50',
         'classe_id'=> 'required|exists:classes,id',
-        'arquivo' => 'required|string|max:9999',   
+        'arquivo' => 'required|file|mimes:pdf,doc,docx,epub|max:10240',
+        'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048' 
         ]);
+        // Save the image to storage/app/public/fotos
+        $path = $request->file('capa')->store('capa', 'public');
+        $url = asset('storage/' . $path);
 
         if($valiator->fails()) {
             return response()->json([
@@ -37,7 +41,8 @@ class LivroController extends Controller
                 'disciplina' =>$request->disciplina,
                 'classe' => $request->classe,
                 'classe_id'=>$request->classe_id,
-                'arquivo' => $request->arquivo
+                'arquivo' => $request->arquivo,
+                'capa' => $request->capa
             ]);
 
             
@@ -67,9 +72,13 @@ class LivroController extends Controller
     [
         'disciplina' => 'required|string|max:50',
         'classe' => 'required|string|max:50',
-        'classe_id'=> 'required|exists:classes,id',
-        'arquivo' => 'required|string|max:9999',   
+        'classe_id'=> 'required|exists:classes,id', 
+        'arquivo' => 'required|file|mimes:pdf,doc,docx,epub|max:10240',
+        'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
+        
     ]);
+    $path = $request->file('capas')->store('capa', 'public');
+    $url = asset('storage/' . $path);
 
     if($validator->fails()){
         return response()->json([
@@ -85,6 +94,7 @@ class LivroController extends Controller
                 'classe' => $request->input('classe'),
                 'classe_id'=>$request->input('classe_id'),
                 'arquivo' => $request->input('arquivo'),
+                'capa' => $request->input('capa'),
                
             ]);
             return response()->json([
