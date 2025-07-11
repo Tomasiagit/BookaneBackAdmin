@@ -20,6 +20,9 @@ class LivroController extends Controller
       public function store(Request $request)
     {
         //
+        $arquivoPath = null;
+        $capaPath = null; 
+
         $valiator = Validator::make($request->all(), [
         'disciplina' => 'required|string|max:50',
         'classe' => 'required|string|max:50',
@@ -27,9 +30,17 @@ class LivroController extends Controller
         'arquivo' => 'required|file|mimes:pdf,doc,docx,epub|max:10240',
         'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048' 
         ]);
-        // Save the image to storage/app/public/fotos
-        $path = $request->file('capa')->store('capa', 'public');
-        $url = asset('storage/' . $path);
+       
+        if($request->hasFile('arquivo')){
+            $arquivoPath = $request->file('arquivo')->store('arquivos', 'public');
+        }
+        if($request->hasFile('capa')){
+            $capaPath = $request->file('capa')->store('capas', 'public');
+        }
+        
+        
+        $urlCapa = asset('storage/' . $capaPath);
+        $urlArquivo = asset('storage/' . $arquivoPath);
 
         if($valiator->fails()) {
             return response()->json([
@@ -41,17 +52,18 @@ class LivroController extends Controller
                 'disciplina' =>$request->disciplina,
                 'classe' => $request->classe,
                 'classe_id'=>$request->classe_id,
-                'arquivo' => $request->arquivo,
-                'capa' => $request->capa
+                'arquivo' =>  $arquivoPath,
+                'capa' =>  $capaPath
+               
             ]);
-
-            
-
 
             if($livro){
                 return response()->json([
                     'status' => 200,
-                    'message' => 'LIvro criado com sucesso!'
+                    'message' => 'LIvro criado com sucesso!',
+                    'arquivo_url' => $urlArquivo,
+                    'capa_url' => $urlCapa,
+                    
                 ], 200);
 
             } else{
@@ -68,6 +80,9 @@ class LivroController extends Controller
     {
 
         //
+        $arquivoPath = null;
+        $capaPath = null;
+
         $validator = Validator::make($request->all(),
     [
         'disciplina' => 'required|string|max:50',
@@ -77,8 +92,16 @@ class LivroController extends Controller
         'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
         
     ]);
-    $path = $request->file('capas')->store('capa', 'public');
-    $url = asset('storage/' . $path);
+        if($request->hasFile('arquivo')){
+            $arquivoPath = $request->file('arquivo')->store('arquivos', 'public');
+        }
+        if($request->hasFile('capa')){
+            $capaPath = $request->file('capa')->store('capas', 'public');
+        }
+        
+        
+        $urlCapa = asset('storage/' . $capaPath);
+        $urlArquivo = asset('storage/' . $arquivoPath);
 
     if($validator->fails()){
         return response()->json([
@@ -87,14 +110,14 @@ class LivroController extends Controller
         ], 422);
 
     }else{
-        $user = Livro::find($id);
-        if($user){
-            $user->update([
+        $livro = Livro::find($id);
+        if($livro){
+            $livro->update([
                 'disciplina' => $request->input('disciplina'),
                 'classe' => $request->input('classe'),
                 'classe_id'=>$request->input('classe_id'),
-                'arquivo' => $request->input('arquivo'),
-                'capa' => $request->input('capa'),
+                'arquivo' => $request->input($urlArquivo),
+                'capa' => $request->input($urlCapa),
                
             ]);
             return response()->json([

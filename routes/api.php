@@ -52,6 +52,7 @@ Route::delete('/livros/{id}',[LivroController::class, 'destroy']);
 Route::get('/pagamentos', [PagamentoController::class, 'index']);
 Route::post('/pagamentos', [PagamentoController::class, 'store']);
 Route::post('/pagamentos/{id}', [PagamentoController::class, 'update']);
+Route::get('/pagamentos/estado/{userid}',[PagamentoController::class, 'verify_user_payment']);
 Route::get('/pagamentos/{id}',[PagamentoController::class, 'show']);
 Route::delete('/pagamentos/{id}',[PagamentoController::class, 'destroy']);
 

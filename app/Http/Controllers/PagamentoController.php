@@ -6,6 +6,7 @@ use App\Models\Pagamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PagamentoController extends Controller
 {
@@ -36,6 +37,25 @@ class PagamentoController extends Controller
                     'message' => 'Pagamento não encontrado'
                 ]);
             }
+    }
+
+    public function verify_user_payment($UserID){
+         $today = Carbon::now()->format('Y-m-d');
+
+         $activePayment = Pagamento::where('user_id',$UserID)->whereDate('data_fim', '>=', $today)->first();
+
+           if ($activePayment) {
+        return response()->json([
+            'status' => true,
+            'pagamento' => $activePayment
+        ]);
+    } else {
+        return response()->json([
+            'status' => false,
+            'message' => 'Usuário sem pagamento activo'
+        ]);
+    }
+
     }
 
    
@@ -124,13 +144,9 @@ class PagamentoController extends Controller
                 return response()->json([
                 'status' => 500,
                 'message' => 'Nao foi possivel actualizar o pagamento!'
-                ],500);
-                
+                ],500);   
             }
-
         }
-
-
     }
     public function destroy($pagamento_id){
         $pagamento = Pagamento::find($pagamento_id);
