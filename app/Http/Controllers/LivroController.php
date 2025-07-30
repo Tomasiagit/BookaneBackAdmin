@@ -16,65 +16,118 @@ class LivroController extends Controller
         ], 200);
 
     }
-     
-      public function store(Request $request)
-    {
-        //
-        $arquivoPath = null;
-        $capaPath = null; 
 
-        $valiator = Validator::make($request->all(), [
+    public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
         'disciplina' => 'required|string|max:50',
         'classe' => 'required|string|max:50',
         'classe_id'=> 'required|exists:classes,id',
-        'arquivo' => 'required|file|mimes:pdf,doc,docx,epub|max:10240',
-        'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048' 
-        ]);
-       
-        if($request->hasFile('arquivo')){
-            $arquivoPath = $request->file('arquivo')->store('arquivos', 'public');
-        }
-        if($request->hasFile('capa')){
-            $capaPath = $request->file('capa')->store('capas', 'public');
-        }
-        
-        
-        $urlCapa = asset('storage/' . $capaPath);
-        $urlArquivo = asset('storage/' . $arquivoPath);
+        'arquivo' => 'required|file|mimes:pdf,doc,docx,epub',
+        'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp' 
+    ]);
 
-        if($valiator->fails()) {
-            return response()->json([
-                'status'=>422,
-                'message' => $valiator->errors()
-            ], 422);
-        } else{
-            $livro = Livro::create([
-                'disciplina' =>$request->disciplina,
-                'classe' => $request->classe,
-                'classe_id'=>$request->classe_id,
-                'arquivo' =>  $arquivoPath,
-                'capa' =>  $capaPath
-               
-            ]);
-
-            if($livro){
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'LIvro criado com sucesso!',
-                    'arquivo_url' => $urlArquivo,
-                    'capa_url' => $urlCapa,
-                    
-                ], 200);
-
-            } else{
-                return response()->json([
-                    'status' => 500,
-                    'message' => 'Não foi possível publicar o livro!'
-                ], 500
-                );
-            }
-        }
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 422,
+            'message' => $validator->errors()
+        ], 422);
     }
+
+    
+    $arquivoPath = null;
+    $capaPath = null;
+
+    if ($request->hasFile('arquivo')) {
+        $arquivoPath = $request->file('arquivo')->store('arquivos', 'public');
+    }
+
+    if ($request->hasFile('capa')) {
+        $capaPath = $request->file('capa')->store('capas', 'public');
+    }
+
+    $livro = Livro::create([
+        'disciplina' => $request->disciplina,
+        'classe' => $request->classe,
+        'classe_id' => $request->classe_id,
+        'arquivo' => $arquivoPath,
+        'capa' => $capaPath,
+    ]);
+
+    if ($livro) {
+        return response()->json([
+            'status' => 200,
+            'message' => 'Livro criado com sucesso!',
+            'arquivo_url' => $arquivoPath,
+            'capa_url' => $capaPath,
+        ], 200);
+    } else {
+        return response()->json([
+            'status' => 500,
+            'message' => 'Não foi possível publicar o livro!'
+        ], 500);
+    }
+}
+
+     
+    //   public function store(Request $request)
+    // {
+    //     //
+    //     $arquivoPath = null;
+    //     $capaPath = null; 
+
+    //     $valiator = Validator::make($request->all(), [
+    //     'disciplina' => 'required|string|max:50',
+    //     'classe' => 'required|string|max:50',
+    //     'classe_id'=> 'required|exists:classes,id',
+    //     'arquivo' => 'required|file|mimes:pdf,doc,docx,epub',
+    //     'capa' => 'required|image|mimes:jpg,jpeg,png,gif,webp' 
+    //     ]);
+       
+    //     if($request->hasFile('arquivo')){
+    //         $arquivoPath = $request->file('arquivo')->store('arquivos', 'public');
+    //     }
+    //     if($request->hasFile('capa')){
+    //         $capaPath = $request->file('capa')->store('capas', 'public');
+    //     }
+        
+        
+    //     // $urlCapa = asset('storage/' . $capaPath);
+    //     // $urlArquivo = asset('storage/' . $arquivoPath);
+
+    //     if($valiator->fails()) {
+    //         return response()->json([
+    //             'status'=>422,
+    //             'message' => $valiator->errors()
+    //         ], 422);
+    //     } else{
+    //         $livro = Livro::create([
+    //             'disciplina' =>$request->disciplina,
+    //             'classe' => $request->classe,
+    //             'classe_id'=>$request->classe_id,
+    //             'arquivo' =>   $arquivoPath,
+    //             'capa' =>  $capaPath
+               
+    //         ]);
+
+    //         if($livro){
+    //             return response()->json([
+    //                 'status' => 200,
+    //                 'message' => 'LIvro criado com sucesso!',
+    //                 'arquivo_url' => $arquivoPath,
+    //                 'capa_url' => $capaPath,
+                    
+    //             ], 200);
+
+    //         } else{
+    //             return response()->json([
+    //                 'status' => 500,
+    //                 'message' => 'Não foi possível publicar o livro!'
+    //             ], 500
+    //             );
+    //         }
+    //     }
+    // }
     //
      public function update(Request $request, int $id)
     {
