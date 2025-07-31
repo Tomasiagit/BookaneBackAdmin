@@ -64,7 +64,7 @@ class LivroController extends Controller
     } else {
         return response()->json([
             'status' => 500,
-            'message' => 'Não foi possível publicar o livro!'
+            'message' => 'Não foi possível publicar o livro.'
         ], 500);
     }
 }
